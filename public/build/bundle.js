@@ -27,6 +27,9 @@ var app = (function () {
     function is_empty(obj) {
         return Object.keys(obj).length === 0;
     }
+    function null_to_empty(value) {
+        return value == null ? '' : value;
+    }
     function append(target, node) {
         target.appendChild(node);
     }
@@ -45,6 +48,10 @@ var app = (function () {
     function space() {
         return text(' ');
     }
+    function listen(node, event, handler, options) {
+        node.addEventListener(event, handler, options);
+        return () => node.removeEventListener(event, handler, options);
+    }
     function attr(node, attribute, value) {
         if (value == null)
             node.removeAttribute(attribute);
@@ -53,6 +60,9 @@ var app = (function () {
     }
     function children(element) {
         return Array.from(element.childNodes);
+    }
+    function set_input_value(input, value) {
+        input.value = value == null ? '' : value;
     }
     function custom_event(type, detail, bubbles = false) {
         const e = document.createEvent('CustomEvent');
@@ -294,12 +304,29 @@ var app = (function () {
         dispatch_dev('SvelteDOMRemove', { node });
         detach(node);
     }
+    function listen_dev(node, event, handler, options, has_prevent_default, has_stop_propagation) {
+        const modifiers = options === true ? ['capture'] : options ? Array.from(Object.keys(options)) : [];
+        if (has_prevent_default)
+            modifiers.push('preventDefault');
+        if (has_stop_propagation)
+            modifiers.push('stopPropagation');
+        dispatch_dev('SvelteDOMAddEventListener', { node, event, handler, modifiers });
+        const dispose = listen(node, event, handler, options);
+        return () => {
+            dispatch_dev('SvelteDOMRemoveEventListener', { node, event, handler, modifiers });
+            dispose();
+        };
+    }
     function attr_dev(node, attribute, value) {
         attr(node, attribute, value);
         if (value == null)
             dispatch_dev('SvelteDOMRemoveAttribute', { node, attribute });
         else
             dispatch_dev('SvelteDOMSetAttribute', { node, attribute, value });
+    }
+    function prop_dev(node, property, value) {
+        node[property] = value;
+        dispatch_dev('SvelteDOMSetProperty', { node, property, value });
     }
     function validate_slots(name, slot, keys) {
         for (const slot_key of Object.keys(slot)) {
@@ -336,6 +363,7 @@ var app = (function () {
     	let main;
     	let h1;
     	let t1;
+    	let div0;
     	let form;
     	let label0;
     	let t3;
@@ -362,6 +390,13 @@ var app = (function () {
     	let br3;
     	let t17;
     	let button;
+    	let t19;
+    	let div1;
+    	let textarea;
+    	let textarea_value_value;
+    	let div1_class_value;
+    	let mounted;
+    	let dispose;
 
     	const block = {
     		c: function create() {
@@ -369,6 +404,7 @@ var app = (function () {
     			h1 = element("h1");
     			h1.textContent = "Entry Application";
     			t1 = space();
+    			div0 = element("div");
     			form = element("form");
     			label0 = element("label");
     			label0.textContent = "Name:";
@@ -399,56 +435,73 @@ var app = (function () {
     			br3 = element("br");
     			t17 = space();
     			button = element("button");
-    			button.textContent = "Elaborate";
-    			attr_dev(h1, "class", "svelte-13ltic7");
-    			add_location(h1, file, 4, 1, 28);
-    			attr_dev(label0, "class", "inline svelte-13ltic7");
+    			button.textContent = "Show result";
+    			t19 = space();
+    			div1 = element("div");
+    			textarea = element("textarea");
+    			attr_dev(h1, "class", "svelte-1aqz9v");
+    			add_location(h1, file, 10, 1, 136);
+    			attr_dev(label0, "class", "inline svelte-1aqz9v");
     			attr_dev(label0, "for", "idName");
-    			add_location(label0, file, 7, 8, 75);
+    			add_location(label0, file, 14, 12, 201);
     			attr_dev(input0, "type", "text");
     			attr_dev(input0, "id", "idName");
     			attr_dev(input0, "name", "name");
     			attr_dev(input0, "placeholder", "write app name");
     			attr_dev(input0, "size", "21");
-    			add_location(input0, file, 8, 8, 133);
-    			add_location(br0, file, 9, 8, 224);
-    			attr_dev(label1, "class", "inline svelte-13ltic7");
+    			add_location(input0, file, 15, 12, 263);
+    			add_location(br0, file, 16, 12, 376);
+    			attr_dev(label1, "class", "inline svelte-1aqz9v");
     			attr_dev(label1, "for", "idComment");
-    			add_location(label1, file, 11, 8, 238);
+    			add_location(label1, file, 18, 12, 398);
     			attr_dev(input1, "type", "text");
     			attr_dev(input1, "id", "idComment");
     			attr_dev(input1, "name", "comment");
     			attr_dev(input1, "placeholder", "write a comment");
     			attr_dev(input1, "size", "18");
-    			add_location(input1, file, 12, 8, 302);
-    			add_location(br1, file, 13, 8, 400);
-    			attr_dev(label2, "class", "inline svelte-13ltic7");
+    			add_location(input1, file, 19, 12, 466);
+    			add_location(br1, file, 20, 12, 586);
+    			attr_dev(label2, "class", "inline svelte-1aqz9v");
     			attr_dev(label2, "for", "idPath");
-    			add_location(label2, file, 15, 8, 414);
+    			add_location(label2, file, 22, 12, 608);
     			attr_dev(input2, "type", "text");
     			attr_dev(input2, "id", "idPath");
     			attr_dev(input2, "name", "path");
     			attr_dev(input2, "placeholder", "write the path to the executable");
     			attr_dev(input2, "size", "22");
-    			add_location(input2, file, 16, 8, 472);
-    			add_location(br2, file, 17, 8, 581);
-    			attr_dev(label3, "class", "inline svelte-13ltic7");
+    			add_location(input2, file, 23, 12, 670);
+    			add_location(br2, file, 24, 12, 804);
+    			attr_dev(label3, "class", "inline svelte-1aqz9v");
     			attr_dev(label3, "for", "idIcon");
-    			add_location(label3, file, 19, 8, 595);
+    			add_location(label3, file, 26, 12, 826);
     			attr_dev(input3, "type", "text");
     			attr_dev(input3, "id", "idIcon");
     			attr_dev(input3, "name", "icon");
     			attr_dev(input3, "placeholder", "write the path to the icon");
     			attr_dev(input3, "size", "22");
-    			add_location(input3, file, 20, 8, 653);
-    			add_location(br3, file, 22, 8, 757);
+    			add_location(input3, file, 27, 12, 888);
+    			add_location(br3, file, 29, 12, 1018);
     			attr_dev(button, "type", "button");
-    			attr_dev(button, "name", "elaborate");
-    			attr_dev(button, "id", "idElaborate");
-    			add_location(button, file, 23, 8, 770);
-    			add_location(form, file, 6, 4, 60);
-    			attr_dev(main, "class", "svelte-13ltic7");
-    			add_location(main, file, 3, 0, 20);
+    			attr_dev(button, "name", "Show");
+    			attr_dev(button, "id", "idShow");
+    			add_location(button, file, 30, 12, 1035);
+    			add_location(form, file, 13, 8, 182);
+    			add_location(div0, file, 12, 4, 168);
+    			attr_dev(textarea, "name", "result");
+    			attr_dev(textarea, "id", "idResult");
+    			attr_dev(textarea, "cols", "30");
+    			attr_dev(textarea, "rows", "10");
+    			textarea.value = textarea_value_value = "\n                Name=" + /*name*/ ctx[0] + "\n                Comment=" + /*comment*/ ctx[2] + "\n                Exec=" + /*path*/ ctx[1] + "\n                Terminal=false\n                Type=Application\n                Icon=" + /*icon*/ ctx[3] + "\n                NoDisplay=false\n            ";
+    			add_location(textarea, file, 37, 12, 1314);
+
+    			attr_dev(div1, "class", div1_class_value = "" + (null_to_empty(/*enableHide*/ ctx[4] && /*name*/ ctx[0] != "" && /*path*/ ctx[1] != "" && /*comment*/ ctx[2] != "" && /*icon*/ ctx[3] != ""
+    			? ''
+    			: 'hide') + " svelte-1aqz9v"));
+
+    			attr_dev(div1, "id", "idResponse");
+    			add_location(div1, file, 35, 4, 1182);
+    			attr_dev(main, "class", "svelte-1aqz9v");
+    			add_location(main, file, 9, 0, 128);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -457,38 +510,86 @@ var app = (function () {
     			insert_dev(target, main, anchor);
     			append_dev(main, h1);
     			append_dev(main, t1);
-    			append_dev(main, form);
+    			append_dev(main, div0);
+    			append_dev(div0, form);
     			append_dev(form, label0);
     			append_dev(form, t3);
     			append_dev(form, input0);
+    			set_input_value(input0, /*name*/ ctx[0]);
     			append_dev(form, t4);
     			append_dev(form, br0);
     			append_dev(form, t5);
     			append_dev(form, label1);
     			append_dev(form, t7);
     			append_dev(form, input1);
+    			set_input_value(input1, /*path*/ ctx[1]);
     			append_dev(form, t8);
     			append_dev(form, br1);
     			append_dev(form, t9);
     			append_dev(form, label2);
     			append_dev(form, t11);
     			append_dev(form, input2);
+    			set_input_value(input2, /*comment*/ ctx[2]);
     			append_dev(form, t12);
     			append_dev(form, br2);
     			append_dev(form, t13);
     			append_dev(form, label3);
     			append_dev(form, t15);
     			append_dev(form, input3);
+    			set_input_value(input3, /*icon*/ ctx[3]);
     			append_dev(form, t16);
     			append_dev(form, br3);
     			append_dev(form, t17);
     			append_dev(form, button);
+    			append_dev(main, t19);
+    			append_dev(main, div1);
+    			append_dev(div1, textarea);
+
+    			if (!mounted) {
+    				dispose = [
+    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[5]),
+    					listen_dev(input1, "input", /*input1_input_handler*/ ctx[6]),
+    					listen_dev(input2, "input", /*input2_input_handler*/ ctx[7]),
+    					listen_dev(input3, "input", /*input3_input_handler*/ ctx[8]),
+    					listen_dev(button, "click", /*click_handler*/ ctx[9], false, false, false)
+    				];
+
+    				mounted = true;
+    			}
     		},
-    		p: noop,
+    		p: function update(ctx, [dirty]) {
+    			if (dirty & /*name*/ 1 && input0.value !== /*name*/ ctx[0]) {
+    				set_input_value(input0, /*name*/ ctx[0]);
+    			}
+
+    			if (dirty & /*path*/ 2 && input1.value !== /*path*/ ctx[1]) {
+    				set_input_value(input1, /*path*/ ctx[1]);
+    			}
+
+    			if (dirty & /*comment*/ 4 && input2.value !== /*comment*/ ctx[2]) {
+    				set_input_value(input2, /*comment*/ ctx[2]);
+    			}
+
+    			if (dirty & /*icon*/ 8 && input3.value !== /*icon*/ ctx[3]) {
+    				set_input_value(input3, /*icon*/ ctx[3]);
+    			}
+
+    			if (dirty & /*name, comment, path, icon*/ 15 && textarea_value_value !== (textarea_value_value = "\n                Name=" + /*name*/ ctx[0] + "\n                Comment=" + /*comment*/ ctx[2] + "\n                Exec=" + /*path*/ ctx[1] + "\n                Terminal=false\n                Type=Application\n                Icon=" + /*icon*/ ctx[3] + "\n                NoDisplay=false\n            ")) {
+    				prop_dev(textarea, "value", textarea_value_value);
+    			}
+
+    			if (dirty & /*enableHide, name, path, comment, icon*/ 31 && div1_class_value !== (div1_class_value = "" + (null_to_empty(/*enableHide*/ ctx[4] && /*name*/ ctx[0] != "" && /*path*/ ctx[1] != "" && /*comment*/ ctx[2] != "" && /*icon*/ ctx[3] != ""
+    			? ''
+    			: 'hide') + " svelte-1aqz9v"))) {
+    				attr_dev(div1, "class", div1_class_value);
+    			}
+    		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(main);
+    			mounted = false;
+    			run_all(dispose);
     		}
     	};
 
@@ -503,16 +604,67 @@ var app = (function () {
     	return block;
     }
 
-    function instance($$self, $$props) {
+    function instance($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('App', slots, []);
+    	let name = "";
+    	let path = "";
+    	let comment = "";
+    	let icon = "";
+    	let enableHide = false;
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<App> was created with unknown prop '${key}'`);
     	});
 
-    	return [];
+    	function input0_input_handler() {
+    		name = this.value;
+    		$$invalidate(0, name);
+    	}
+
+    	function input1_input_handler() {
+    		path = this.value;
+    		$$invalidate(1, path);
+    	}
+
+    	function input2_input_handler() {
+    		comment = this.value;
+    		$$invalidate(2, comment);
+    	}
+
+    	function input3_input_handler() {
+    		icon = this.value;
+    		$$invalidate(3, icon);
+    	}
+
+    	const click_handler = () => $$invalidate(4, enableHide = !enableHide);
+    	$$self.$capture_state = () => ({ name, path, comment, icon, enableHide });
+
+    	$$self.$inject_state = $$props => {
+    		if ('name' in $$props) $$invalidate(0, name = $$props.name);
+    		if ('path' in $$props) $$invalidate(1, path = $$props.path);
+    		if ('comment' in $$props) $$invalidate(2, comment = $$props.comment);
+    		if ('icon' in $$props) $$invalidate(3, icon = $$props.icon);
+    		if ('enableHide' in $$props) $$invalidate(4, enableHide = $$props.enableHide);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [
+    		name,
+    		path,
+    		comment,
+    		icon,
+    		enableHide,
+    		input0_input_handler,
+    		input1_input_handler,
+    		input2_input_handler,
+    		input3_input_handler,
+    		click_handler
+    	];
     }
 
     class App extends SvelteComponentDev {
