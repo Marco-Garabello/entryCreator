@@ -39,6 +39,12 @@ var app = (function () {
     function element(name) {
         return document.createElement(name);
     }
+    function text(data) {
+        return document.createTextNode(data);
+    }
+    function space() {
+        return text(' ');
+    }
     function attr(node, attribute, value) {
         if (value == null)
             node.removeAttribute(attribute);
@@ -329,15 +335,119 @@ var app = (function () {
     function create_fragment(ctx) {
     	let main;
     	let h1;
+    	let t1;
+    	let form;
+    	let label0;
+    	let t3;
+    	let input0;
+    	let t4;
+    	let br0;
+    	let t5;
+    	let label1;
+    	let t7;
+    	let input1;
+    	let t8;
+    	let br1;
+    	let t9;
+    	let label2;
+    	let t11;
+    	let input2;
+    	let t12;
+    	let br2;
+    	let t13;
+    	let label3;
+    	let t15;
+    	let input3;
+    	let t16;
+    	let br3;
+    	let t17;
+    	let button;
 
     	const block = {
     		c: function create() {
     			main = element("main");
     			h1 = element("h1");
-    			h1.textContent = "Application";
-    			attr_dev(h1, "class", "svelte-1saj8cy");
+    			h1.textContent = "Entry Application";
+    			t1 = space();
+    			form = element("form");
+    			label0 = element("label");
+    			label0.textContent = "Name:";
+    			t3 = space();
+    			input0 = element("input");
+    			t4 = space();
+    			br0 = element("br");
+    			t5 = space();
+    			label1 = element("label");
+    			label1.textContent = "Comment:";
+    			t7 = space();
+    			input1 = element("input");
+    			t8 = space();
+    			br1 = element("br");
+    			t9 = space();
+    			label2 = element("label");
+    			label2.textContent = "Path:";
+    			t11 = space();
+    			input2 = element("input");
+    			t12 = space();
+    			br2 = element("br");
+    			t13 = space();
+    			label3 = element("label");
+    			label3.textContent = "Icon:";
+    			t15 = space();
+    			input3 = element("input");
+    			t16 = space();
+    			br3 = element("br");
+    			t17 = space();
+    			button = element("button");
+    			button.textContent = "Elaborate";
+    			attr_dev(h1, "class", "svelte-13ltic7");
     			add_location(h1, file, 4, 1, 28);
-    			attr_dev(main, "class", "svelte-1saj8cy");
+    			attr_dev(label0, "class", "inline svelte-13ltic7");
+    			attr_dev(label0, "for", "idName");
+    			add_location(label0, file, 7, 8, 75);
+    			attr_dev(input0, "type", "text");
+    			attr_dev(input0, "id", "idName");
+    			attr_dev(input0, "name", "name");
+    			attr_dev(input0, "placeholder", "write app name");
+    			attr_dev(input0, "size", "21");
+    			add_location(input0, file, 8, 8, 133);
+    			add_location(br0, file, 9, 8, 224);
+    			attr_dev(label1, "class", "inline svelte-13ltic7");
+    			attr_dev(label1, "for", "idComment");
+    			add_location(label1, file, 11, 8, 238);
+    			attr_dev(input1, "type", "text");
+    			attr_dev(input1, "id", "idComment");
+    			attr_dev(input1, "name", "comment");
+    			attr_dev(input1, "placeholder", "write a comment");
+    			attr_dev(input1, "size", "18");
+    			add_location(input1, file, 12, 8, 302);
+    			add_location(br1, file, 13, 8, 400);
+    			attr_dev(label2, "class", "inline svelte-13ltic7");
+    			attr_dev(label2, "for", "idPath");
+    			add_location(label2, file, 15, 8, 414);
+    			attr_dev(input2, "type", "text");
+    			attr_dev(input2, "id", "idPath");
+    			attr_dev(input2, "name", "path");
+    			attr_dev(input2, "placeholder", "write the path to the executable");
+    			attr_dev(input2, "size", "22");
+    			add_location(input2, file, 16, 8, 472);
+    			add_location(br2, file, 17, 8, 581);
+    			attr_dev(label3, "class", "inline svelte-13ltic7");
+    			attr_dev(label3, "for", "idIcon");
+    			add_location(label3, file, 19, 8, 595);
+    			attr_dev(input3, "type", "text");
+    			attr_dev(input3, "id", "idIcon");
+    			attr_dev(input3, "name", "icon");
+    			attr_dev(input3, "placeholder", "write the path to the icon");
+    			attr_dev(input3, "size", "22");
+    			add_location(input3, file, 20, 8, 653);
+    			add_location(br3, file, 22, 8, 757);
+    			attr_dev(button, "type", "button");
+    			attr_dev(button, "name", "elaborate");
+    			attr_dev(button, "id", "idElaborate");
+    			add_location(button, file, 23, 8, 770);
+    			add_location(form, file, 6, 4, 60);
+    			attr_dev(main, "class", "svelte-13ltic7");
     			add_location(main, file, 3, 0, 20);
     		},
     		l: function claim(nodes) {
@@ -346,6 +456,33 @@ var app = (function () {
     		m: function mount(target, anchor) {
     			insert_dev(target, main, anchor);
     			append_dev(main, h1);
+    			append_dev(main, t1);
+    			append_dev(main, form);
+    			append_dev(form, label0);
+    			append_dev(form, t3);
+    			append_dev(form, input0);
+    			append_dev(form, t4);
+    			append_dev(form, br0);
+    			append_dev(form, t5);
+    			append_dev(form, label1);
+    			append_dev(form, t7);
+    			append_dev(form, input1);
+    			append_dev(form, t8);
+    			append_dev(form, br1);
+    			append_dev(form, t9);
+    			append_dev(form, label2);
+    			append_dev(form, t11);
+    			append_dev(form, input2);
+    			append_dev(form, t12);
+    			append_dev(form, br2);
+    			append_dev(form, t13);
+    			append_dev(form, label3);
+    			append_dev(form, t15);
+    			append_dev(form, input3);
+    			append_dev(form, t16);
+    			append_dev(form, br3);
+    			append_dev(form, t17);
+    			append_dev(form, button);
     		},
     		p: noop,
     		i: noop,
